@@ -1,1 +1,79 @@
-# .github
+# Long Ho | DevOps Engineer
+
+I build CI/CD platforms, deployment automation, and reliability tooling for banking and enterprise systems.
+
+Currently focused on Core Banking, Open Banking, Payment Systems, OpenShift, Jenkins, GitLab CI, Ansible, Helm, and database release automation.
+
+[Website](https://drgdevlab.com) | [LinkedIn](https://www.linkedin.com/in/longhn0710) | [GitHub](https://github.com/devsecopslonghn) | [Email](mailto:longhn0710@gmail.com)
+
+## About
+
+DevOps Engineer based in Ho Chi Minh City, Vietnam, with 3+ years of experience in regulated financial environments.
+
+My work is centered around secure and auditable delivery:
+
+- CI/CD pipeline engineering for multi-environment deployments
+- OpenShift and Kubernetes deployment automation
+- Jenkins Pipeline as Code, GitLab CI, and release governance
+- Helm-based application delivery for modular upgrades
+- Database CI/CD with versioned migrations and rollback planning
+- Security scanning integration with SonarQube, Aqua Scanner, Coverity, and BlackDuck
+- Monitoring and incident visibility using Grafana, Prometheus, Datadog, Zabbix, and Kibana
+
+## Current Focus
+
+- Managing CI/CD patterns across large banking application portfolios
+- Automating deployment workflows for Core Banking, Open Banking, and Payment systems
+- Improving release safety through approval gates, audit logs, and rollback strategies
+- Building platform workflows that connect Git, Jenkins, Ansible, ITSM, and Microsoft Teams
+
+## Impact Highlights
+
+- Contributed to Temenos T24 R25 go-live delivery in Vietnam through pipeline automation and deployment standardization
+- Helped reduce a major banking upgrade window from weeks to days through repeatable CI/CD and Helm-based delivery
+- Redesigned JBoss deployment topology for an AML platform to remove avoidable deployment downtime
+- Built and maintained automation patterns for WebSphere, JBoss, OpenShift, WSO2 API Manager, and database deployments
+- Supported production-grade reliability practices with monitoring, alerting, cleanup automation, and incident response
+
+## Tech Stack
+
+| Area | Tools |
+| --- | --- |
+| CI/CD | Jenkins, GitLab CI, GitHub Actions, Groovy Pipeline as Code |
+| Containers | Docker, Kubernetes, OpenShift OCP, Helm |
+| Automation | Ansible, Terraform, Bash, Python |
+| Database Delivery | Flyway, SQL versioning, migration and rollback scripts |
+| Monitoring | Grafana, Prometheus, Datadog, Zabbix, Kibana |
+| Security | SonarQube, Aqua Scanner, Coverity, BlackDuck |
+| Artifact Management | Nexus, JFrog Artifactory |
+| Cloud | AWS EC2, S3, RDS, ECS, Auto Scaling, Spot Instances |
+
+## Pinned Work
+
+### [drgdevlab_mainpage](https://github.com/devsecopslonghn/drgdevlab_mainpage)
+
+Personal DevOps portfolio built with Astro and Tailwind CSS. It presents my experience, CV, production delivery background, and DevOps project notes.
+
+### [vpnclient](https://github.com/devsecopslonghn/vpnclient)
+
+Personal automation client for VPN connection workflows.
+
+### [exam-database](https://github.com/devsecopslonghn/exam-database)
+
+Simple database design exercise for categories, questions, answer choices, users, and scoring.
+
+### Banking CI/CD Case Studies
+
+Public-safe summaries of real delivery patterns I work with: branch-based release strategy, approval gates, OpenShift rollout design, database migration governance, and monitoring-driven operations.
+
+## Resume
+
+- [View portfolio](https://drgdevlab.com)
+- [Download resume](https://drgdevlab.com/resume/Long_Ho_DevOps_Resume.pdf)
+
+## Contact
+
+For DevOps, CI/CD, platform automation, or banking delivery discussions:
+
+- Email: [longhn0710@gmail.com](mailto:longhn0710@gmail.com)
+- LinkedIn: [linkedin.com/in/longhn0710](https://www.linkedin.com/in/longhn0710)

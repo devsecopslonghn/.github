@@ -1,5 +1,33 @@
 # Long Ho | DevOps Engineer
 
+## Reusable GitHub Actions
+
+This repository also provides organization-wide reusable workflows under
+`.github/workflows/`:
+
+- `python-container.yml` — install, test and build a Python container;
+- `node-container.yml` — install, typecheck/build and build a Node container;
+- `helm-validate.yml` — lint, render and client-side validate a Helm chart.
+
+Repositories call a template from a thin workflow in their own repository:
+
+```yaml
+jobs:
+  verify:
+    uses: devsecopslonghn/.github/.github/workflows/python-container.yml@master
+    with:
+      image_name: example-service
+      publish_image: false
+    secrets: inherit
+```
+
+GHCR publication uses the built-in `github.token`; no external registry
+credential is required. A caller can enable it with `publish_image: true`,
+`registry: ghcr.io` and a full image name such as
+`ghcr.io/devsecopslonghn/example-service`. Pull requests still build without
+publishing. Pin callers to a release tag or commit SHA when the template
+contract is stable.
+
 I build CI/CD platforms, deployment automation, and reliability tooling for banking and enterprise systems.
 
 Currently focused on Core Banking, Open Banking, Payment Systems, OpenShift, Jenkins, GitLab CI, Ansible, Helm, and database release automation.

@@ -2,7 +2,8 @@
 
 I build CI/CD platforms, deployment automation, and reliability tooling for banking and enterprise systems.
 
-Currently focused on Core Banking, Open Banking, Payment Systems, OpenShift, Jenkins, GitLab CI, Ansible, Helm, and database release automation.
+Currently focused on Core Banking, Open Banking, Payment Systems, OpenShift,
+GitHub Actions, GitLab CI, Ansible, Helm, and database release automation.
 
 [Website](https://drgdevlab.com) | [LinkedIn](https://www.linkedin.com/in/longhn0710) | [GitHub](https://github.com/devsecopslonghn) | [Email](mailto:longhn0710@gmail.com)
 
@@ -14,7 +15,7 @@ My work is centered around secure and auditable delivery:
 
 - CI/CD pipeline engineering for multi-environment deployments
 - OpenShift and Kubernetes deployment automation
-- Jenkins Pipeline as Code, GitLab CI, and release governance
+- Reusable GitHub Actions, GitLab CI, and release governance
 - Helm-based application delivery for modular upgrades
 - Database CI/CD with versioned migrations and rollback planning
 - Security scanning integration with SonarQube, Aqua Scanner, Coverity, and BlackDuck
@@ -25,7 +26,7 @@ My work is centered around secure and auditable delivery:
 - Managing CI/CD patterns across large banking application portfolios
 - Automating deployment workflows for Core Banking, Open Banking, and Payment systems
 - Improving release safety through approval gates, audit logs, and rollback strategies
-- Building platform workflows that connect Git, Jenkins, Ansible, ITSM, and Microsoft Teams
+- Building platform workflows that connect Git, Ansible, ITSM, and Microsoft Teams
 
 ## Impact Highlights
 
@@ -39,7 +40,7 @@ My work is centered around secure and auditable delivery:
 
 | Area | Tools |
 | --- | --- |
-| CI/CD | Jenkins, GitLab CI, GitHub Actions, Groovy Pipeline as Code |
+| CI/CD | GitLab CI, GitHub Actions, and reusable workflow automation |
 | Containers | Docker, Kubernetes, OpenShift OCP, Helm |
 | Automation | Ansible, Terraform, Bash, Python |
 | Database Delivery | Flyway, SQL versioning, migration and rollback scripts |

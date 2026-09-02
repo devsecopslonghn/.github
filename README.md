@@ -81,7 +81,7 @@ My work is centered around secure and auditable delivery:
 
 | Area | Tools |
 | --- | --- |
-| CI/CD | Jenkins, GitLab CI, GitHub Actions, Groovy Pipeline as Code |
+| CI/CD | GitLab CI, GitHub Actions, and reusable workflow automation |
 | Containers | Docker, Kubernetes, OpenShift OCP, Helm |
 | Automation | Ansible, Terraform, Bash, Python |
 | Database Delivery | Flyway, SQL versioning, migration and rollback scripts |

@@ -7,6 +7,7 @@ This repository also provides organization-wide reusable workflows under
 
 - `python-container.yml` — install, test and build a Python container;
 - `node-container.yml` — install, typecheck/build and build a Node container;
+- `java-container.yml` — run Maven tests and build a Java container;
 - `helm-validate.yml` — lint and render a Helm chart, then validate the
   rendered manifest is non-empty without requiring a cluster connection.
 
@@ -29,9 +30,21 @@ credential is required. A caller can enable it with `publish_image: true`,
 commit SHA and `latest`; pull requests still build without publishing. Pin
 callers to a release tag or commit SHA when the template contract is stable.
 
+## Deployment contract
+
+Application workflows publish immutable image tags and update the target Helm
+repository. Argo CD is the only component that reconciles Kubernetes; GitHub
+Actions does not apply manifests directly.
+
+GHCR packages must be either public for anonymous cluster pulls or private with
+an explicitly provisioned Kubernetes `imagePullSecret` backed by a credential
+that has package read access. Registry credentials are never committed to a
+repository or embedded in workflow logs.
+
 I build CI/CD platforms, deployment automation, and reliability tooling for banking and enterprise systems.
 
-Currently focused on Core Banking, Open Banking, Payment Systems, OpenShift, Jenkins, GitLab CI, Ansible, Helm, and database release automation.
+Currently focused on Core Banking, Open Banking, Payment Systems, OpenShift,
+GitHub Actions, GitLab CI, Ansible, Helm, and database release automation.
 
 [Website](https://drgdevlab.com) | [LinkedIn](https://www.linkedin.com/in/longhn0710) | [GitHub](https://github.com/devsecopslonghn) | [Email](mailto:longhn0710@gmail.com)
 
@@ -43,7 +56,7 @@ My work is centered around secure and auditable delivery:
 
 - CI/CD pipeline engineering for multi-environment deployments
 - OpenShift and Kubernetes deployment automation
-- Jenkins Pipeline as Code, GitLab CI, and release governance
+- Reusable GitHub Actions, GitLab CI, and release governance
 - Helm-based application delivery for modular upgrades
 - Database CI/CD with versioned migrations and rollback planning
 - Security scanning integration with SonarQube, Aqua Scanner, Coverity, and BlackDuck
@@ -54,7 +67,7 @@ My work is centered around secure and auditable delivery:
 - Managing CI/CD patterns across large banking application portfolios
 - Automating deployment workflows for Core Banking, Open Banking, and Payment systems
 - Improving release safety through approval gates, audit logs, and rollback strategies
-- Building platform workflows that connect Git, Jenkins, Ansible, ITSM, and Microsoft Teams
+- Building platform workflows that connect Git, Ansible, ITSM, and Microsoft Teams
 
 ## Impact Highlights
 

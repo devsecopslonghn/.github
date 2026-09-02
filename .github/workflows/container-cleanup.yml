@@ -1,0 +1,93 @@
+name: Reusable container cleanup
+
+on:
+  workflow_call:
+    inputs:
+      package_name:
+        required: true
+        type: string
+      min_versions_to_keep:
+        required: false
+        default: 20
+        type: number
+      chart_values_url:
+        required: false
+        default: ""
+        type: string
+      protected_tag_regex:
+        required: false
+        default: "^latest$"
+        type: string
+      execute:
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect and clean old container versions
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PACKAGE_NAME: ${{ inputs.package_name }}
+          MIN_VERSIONS_TO_KEEP: ${{ inputs.min_versions_to_keep }}
+          CHART_VALUES_URL: ${{ inputs.chart_values_url }}
+          PROTECTED_TAG_REGEX: ${{ inputs.protected_tag_regex }}
+          EXECUTE: ${{ inputs.execute }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import re
+          import subprocess
+          import urllib.request
+          from urllib.parse import quote
+
+          owner = os.environ["GITHUB_REPOSITORY_OWNER"]
+          package = os.environ["PACKAGE_NAME"]
+          endpoint = f"/orgs/{quote(owner)}/packages/container/{quote(package)}/versions?per_page=100"
+          raw = subprocess.check_output(["gh", "api", "--paginate", "--slurp", endpoint], text=True)
+          pages = json.loads(raw)
+          versions = [version for page in pages for version in page] if pages and isinstance(pages[0], list) else pages
+
+          protected_patterns = [re.compile(os.environ["PROTECTED_TAG_REGEX"])]
+          chart_url = os.environ.get("CHART_VALUES_URL", "").strip()
+          if chart_url:
+              with urllib.request.urlopen(chart_url, timeout=15) as response:
+                  chart_text = response.read().decode("utf-8")
+              chart_tags = re.findall(r"(?m)^\s+tag:\s*[\"']?([A-Za-z0-9._-]+)", chart_text)
+              protected_patterns.extend(re.compile(rf"^{re.escape(tag)}$") for tag in chart_tags)
+
+          def tags(version):
+              return version.get("metadata", {}).get("container", {}).get("tags", []) or []
+
+          def is_protected(version):
+              return any(pattern.search(tag) for tag in tags(version) for pattern in protected_patterns)
+
+          versions.sort(key=lambda version: version.get("created_at", ""), reverse=True)
+          protected = [version for version in versions if is_protected(version)]
+          candidates = [version for version in versions if not is_protected(version)]
+          keep_count = int(os.environ["MIN_VERSIONS_TO_KEEP"])
+          keep = candidates[:keep_count]
+          delete = candidates[keep_count:]
+
+          print(f"package={owner}/{package} total={len(versions)} protected={len(protected)} keep={len(keep)} delete={len(delete)}")
+          print("protected_tags=" + ",".join(sorted({tag for version in protected for tag in tags(version)})))
+          print("delete_ids=" + ",".join(str(version["id"]) for version in delete))
+
+          if os.environ["EXECUTE"].lower() != "true":
+              print("dry_run=true; no package versions were deleted")
+              raise SystemExit(0)
+
+          for version in delete:
+              version_id = str(version["id"])
+              delete_endpoint = f"/orgs/{quote(owner)}/packages/container/{quote(package)}/versions/{version_id}"
+              subprocess.run(["gh", "api", "--method", "DELETE", delete_endpoint], check=True)
+              print(f"deleted_version_id={version_id}")
+          PY

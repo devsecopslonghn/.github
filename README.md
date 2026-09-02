@@ -10,6 +10,7 @@ This repository also provides organization-wide reusable workflows under
 - `java-container.yml` — run Maven tests and build a Java container;
 - `helm-validate.yml` — lint and render a Helm chart, then validate the
   rendered manifest is non-empty without requiring a cluster connection.
+- `container-cleanup.yml` — inspect and retain protected/recent GHCR versions.
 
 Repositories call a template from a thin workflow in their own repository:
 
@@ -40,6 +41,12 @@ GHCR packages must be either public for anonymous cluster pulls or private with
 an explicitly provisioned Kubernetes `imagePullSecret` backed by a credential
 that has package read access. Registry credentials are never committed to a
 repository or embedded in workflow logs.
+
+Container cleanup is a separate scheduled workflow. It protects `latest`, the
+image tags referenced by the target Helm values, and keeps the 20 most recent
+remaining versions. Manual dispatch is dry-run by default; scheduled runs are
+the only automatic deletion path. The workflow uses the repository
+`GITHUB_TOKEN`, which must have package administration access for the package.
 
 I build CI/CD platforms, deployment automation, and reliability tooling for banking and enterprise systems.
 

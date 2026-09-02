@@ -7,8 +7,8 @@ This repository also provides organization-wide reusable workflows under
 
 - `python-container.yml` — install, test and build a Python container;
 - `node-container.yml` — install, typecheck/build and build a Node container;
-- `helm-validate.yml` — lint, render and client-side validate a Helm chart
-  without requiring a cluster connection.
+- `helm-validate.yml` — lint and render a Helm chart, then validate the
+  rendered manifest is non-empty without requiring a cluster connection.
 
 Repositories call a template from a thin workflow in their own repository:
 

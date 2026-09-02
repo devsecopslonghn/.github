@@ -25,9 +25,9 @@ jobs:
 GHCR publication uses the built-in `github.token`; no external registry
 credential is required. A caller can enable it with `publish_image: true`,
 `registry: ghcr.io` and a full image name such as
-`ghcr.io/devsecopslonghn/example-service`. Pull requests still build without
-publishing. Pin callers to a release tag or commit SHA when the template
-contract is stable.
+`ghcr.io/devsecopslonghn/example-service`. The template publishes both the
+commit SHA and `latest`; pull requests still build without publishing. Pin
+callers to a release tag or commit SHA when the template contract is stable.
 
 I build CI/CD platforms, deployment automation, and reliability tooling for banking and enterprise systems.
 

@@ -81,4 +81,6 @@ jobs:
           context: .
           file: ${{ inputs.dockerfile }}
           push: ${{ inputs.publish_image && inputs.registry != '' && github.event_name != 'pull_request' }}
-          tags: ${{ inputs.image_name }}:${{ github.sha }}
+          tags: |
+            ${{ inputs.image_name }}:${{ github.sha }}
+            ${{ inputs.image_name }}:latest

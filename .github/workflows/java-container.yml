@@ -1,20 +1,14 @@
-name: Reusable Node container CI
+name: Reusable Java container CI
 
 on:
   workflow_call:
     inputs:
-      node_version:
+      java_version:
         type: string
-        default: "22"
-      install_command:
-        type: string
-        default: npm ci
-      quality_command:
-        type: string
-        default: npm run typecheck
+        default: "21"
       build_command:
         type: string
-        default: npm run build
+        default: mvn -B -ntp test
       image_name:
         type: string
         required: true
@@ -27,12 +21,6 @@ on:
       registry:
         type: string
         default: ghcr.io
-      working_directory:
-        type: string
-        default: .
-      docker_context:
-        type: string
-        default: .
     secrets:
       registry_username:
         required: false
@@ -50,27 +38,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
         with:
-          node-version: ${{ inputs.node_version }}
-          cache: npm
-          cache-dependency-path: ${{ inputs.working_directory }}/package-lock.json
+          distribution: temurin
+          java-version: ${{ inputs.java_version }}
+          cache: maven
 
-      - name: Resolve working directory
-        shell: bash
-        run: test -d "${{ inputs.working_directory }}"
-
-      - name: Install dependencies
-        working-directory: ${{ inputs.working_directory }}
-        run: ${{ inputs.install_command }}
-
-      - name: Run quality checks
-        working-directory: ${{ inputs.working_directory }}
-        run: ${{ inputs.quality_command }}
-
-      - name: Build application
-        working-directory: ${{ inputs.working_directory }}
+      - name: Run build and tests
         run: ${{ inputs.build_command }}
 
       - name: Validate publish configuration
@@ -98,7 +73,7 @@ jobs:
       - name: Build container
         uses: docker/build-push-action@v6
         with:
-          context: ${{ inputs.docker_context }}
+          context: .
           file: ${{ inputs.dockerfile }}
           push: ${{ inputs.publish_image && inputs.registry != '' && github.event_name != 'pull_request' }}
           tags: |

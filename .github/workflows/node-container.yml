@@ -33,6 +33,9 @@ on:
       docker_context:
         type: string
         default: .
+      npm_cache:
+        type: boolean
+        default: true
     secrets:
       registry_username:
         required: false
@@ -54,7 +57,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ inputs.node_version }}
-          cache: npm
+          cache: ${{ inputs.npm_cache && 'npm' || '' }}
           cache-dependency-path: ${{ inputs.working_directory }}/package-lock.json
 
       - name: Resolve working directory

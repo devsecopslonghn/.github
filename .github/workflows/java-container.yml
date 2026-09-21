@@ -2,6 +2,10 @@ name: Reusable Java container CI
 
 on:
   workflow_call:
+    outputs:
+      digest:
+        description: Published immutable image digest
+        value: ${{ jobs.container.outputs.digest }}
     inputs:
       java_version:
         type: string
@@ -29,17 +33,21 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 jobs:
+  source-security:
+    uses: ./.github/workflows/security-scan.yml
+
   verify:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
 
       - name: Set up Java
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
           distribution: temurin
           java-version: ${{ inputs.java_version }}
@@ -47,6 +55,50 @@ jobs:
 
       - name: Run build and tests
         run: ${{ inputs.build_command }}
+
+  image-security:
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - name: Build image for scanning
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          file: ${{ inputs.dockerfile }}
+          push: false
+          outputs: type=docker,dest=/tmp/platform-image.tar
+          tags: ${{ inputs.image_name }}:${{ github.sha }}
+      - name: Scan final image
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          input: /tmp/platform-image.tar
+          severity: HIGH,CRITICAL
+          exit-code: '1'
+          hide-progress: true
+
+  container:
+    if: ${{ inputs.publish_image && github.event_name != 'pull_request' }}
+    needs: [verify, source-security, image-security]
+    outputs:
+      digest: ${{ steps.image.outputs.digest }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
 
       - name: Validate publish configuration
         if: ${{ inputs.publish_image }}
@@ -56,7 +108,7 @@ jobs:
 
       - name: Log in to container registry
         if: ${{ inputs.publish_image && inputs.registry == 'ghcr.io' && github.event_name != 'pull_request' }}
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ${{ inputs.registry }}
           username: ${{ github.actor }}
@@ -64,18 +116,20 @@ jobs:
 
       - name: Log in to external container registry
         if: ${{ inputs.publish_image && inputs.registry != '' && inputs.registry != 'ghcr.io' && github.event_name != 'pull_request' }}
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ${{ inputs.registry }}
           username: ${{ secrets.registry_username }}
           password: ${{ secrets.registry_password }}
 
       - name: Build container
-        uses: docker/build-push-action@v6
+        id: image
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           context: .
           file: ${{ inputs.dockerfile }}
           push: ${{ inputs.publish_image && inputs.registry != '' && github.event_name != 'pull_request' }}
+          sbom: true
+          provenance: mode=max
           tags: |
             ${{ inputs.image_name }}:${{ github.sha }}
-            ${{ inputs.image_name }}:latest

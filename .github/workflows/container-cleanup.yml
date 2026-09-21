@@ -20,16 +20,18 @@ on:
         type: string
       execute:
         required: false
-        default: true
+        default: false
         type: boolean
 
 permissions:
   contents: read
-  packages: write
 
 jobs:
   cleanup:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Inspect and clean old container versions
         env:

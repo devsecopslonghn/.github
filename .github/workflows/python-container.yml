@@ -154,9 +154,7 @@ jobs:
           TARGET_IMAGE: ${{ inputs.image_name }}
         run: |
           set -euo pipefail
-          skopeo copy --all --preserve-digests --authfile "$HOME/.docker/config.json" \\
-            --digestfile /tmp/published-digest \\
-            oci-archive:/tmp/scanned-image/platform-image.tar "docker://$TARGET_IMAGE:$GITHUB_SHA"
+          skopeo copy --all --preserve-digests --authfile "$HOME/.docker/config.json" --digestfile /tmp/published-digest oci-archive:/tmp/scanned-image/platform-image.tar "docker://$TARGET_IMAGE:$GITHUB_SHA"
           digest=$(cat /tmp/published-digest)
           [[ "$digest" =~ ^sha256:[a-f0-9]{64}$ ]]
-          printf 'digest=%s\\n' "$digest" >> "$GITHUB_OUTPUT"
+          echo "digest=$digest" >> "$GITHUB_OUTPUT"

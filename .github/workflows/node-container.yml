@@ -105,10 +105,12 @@ jobs:
           sbom: true
           provenance: mode=min
           tags: ${{ inputs.image_name }}:${{ github.sha }}
+      - name: Extract OCI layout for scanning
+        run: mkdir /tmp/platform-image && tar -xf /tmp/platform-image.tar -C /tmp/platform-image
       - name: Scan final image
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
-          input: /tmp/platform-image.tar
+          input: /tmp/platform-image
           severity: HIGH,CRITICAL
           exit-code: '1'
           hide-progress: true

@@ -2,6 +2,10 @@ name: Reusable Python container CI
 
 on:
   workflow_call:
+    outputs:
+      digest:
+        description: Published immutable image digest
+        value: ${{ jobs.container.outputs.digest }}
     inputs:
       python_version:
         type: string
@@ -32,17 +36,21 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 jobs:
+  source-security:
+    uses: ./.github/workflows/security-scan.yml
+
   verify:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: ${{ inputs.python_version }}
           cache: pip
@@ -53,15 +61,80 @@ jobs:
       - name: Run tests
         run: ${{ inputs.test_command }}
 
+  image-security:
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - name: Build image for scanning
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          file: ${{ inputs.dockerfile }}
+          push: false
+          platforms: linux/amd64
+          outputs: type=oci,dest=/tmp/platform-image.tar
+          sbom: true
+          provenance: mode=min
+          tags: ${{ inputs.image_name }}:${{ github.sha }}
+      - name: Scan final image
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          input: /tmp/platform-image.tar
+          severity: HIGH,CRITICAL
+          exit-code: '1'
+          hide-progress: true
+      - name: Preserve scanned OCI image and attestations
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: scanned-image-python-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/platform-image.tar
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: error
+
+  container:
+    if: ${{ inputs.publish_image && github.event_name != 'pull_request' }}
+    needs: [verify, source-security, image-security]
+    outputs:
+      digest: ${{ steps.image.outputs.digest }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Download the scanned OCI image
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
+        with:
+          name: scanned-image-python-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/scanned-image
+
+      - name: Install registry copy tool
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends skopeo
+
       - name: Validate publish configuration
         if: ${{ inputs.publish_image }}
         shell: bash
+        env:
+          TARGET_REGISTRY: ${{ inputs.registry }}
+          TARGET_IMAGE: ${{ inputs.image_name }}
         run: |
-          test -n "${{ inputs.registry }}" || { echo "registry is required when publish_image=true" >&2; exit 1; }
+          test -n "$TARGET_REGISTRY"
+          case "$TARGET_IMAGE" in "$TARGET_REGISTRY"/*) ;; *) echo 'image must be within configured registry' >&2; exit 1 ;; esac
 
       - name: Log in to container registry
         if: ${{ inputs.publish_image && inputs.registry == 'ghcr.io' && github.event_name != 'pull_request' }}
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ${{ inputs.registry }}
           username: ${{ github.actor }}
@@ -69,18 +142,19 @@ jobs:
 
       - name: Log in to external container registry
         if: ${{ inputs.publish_image && inputs.registry != '' && inputs.registry != 'ghcr.io' && github.event_name != 'pull_request' }}
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ${{ inputs.registry }}
           username: ${{ secrets.registry_username }}
           password: ${{ secrets.registry_password }}
 
-      - name: Build container
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ${{ inputs.dockerfile }}
-          push: ${{ inputs.publish_image && inputs.registry != '' && github.event_name != 'pull_request' }}
-          tags: |
-            ${{ inputs.image_name }}:${{ github.sha }}
-            ${{ inputs.image_name }}:latest
+      - name: Publish the exact scanned image with attestations
+        id: image
+        env:
+          TARGET_IMAGE: ${{ inputs.image_name }}
+        run: |
+          set -euo pipefail
+          skopeo copy --all --preserve-digests --authfile "$HOME/.docker/config.json" --digestfile /tmp/published-digest oci-archive:/tmp/scanned-image/platform-image.tar "docker://$TARGET_IMAGE:$GITHUB_SHA"
+          digest=$(cat /tmp/published-digest)
+          [[ "$digest" =~ ^sha256:[a-f0-9]{64}$ ]]
+          echo "digest=$digest" >> "$GITHUB_OUTPUT"

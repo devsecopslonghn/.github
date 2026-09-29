@@ -1,80 +1,110 @@
-# Long Ho | DevOps Engineer
+# Long Ho | DevSecOps & CI/CD Platform Engineer
 
-I build CI/CD platforms, deployment automation, and reliability tooling for banking and enterprise systems.
+I design and operate secure delivery platforms for regulated, production-critical systems across banking, insurance, and enterprise environments.
 
-Currently focused on Core Banking, Open Banking, Payment Systems, OpenShift,
-GitHub Actions, GitLab CI, Ansible, Helm, and database release automation.
+My work sits at the intersection of **CI/CD platform engineering, release engineering, Kubernetes/OpenShift, DevSecOps controls, cloud infrastructure, and core banking delivery**.
 
 [Website](https://drgdevlab.com) | [LinkedIn](https://www.linkedin.com/in/longhn0710) | [GitHub](https://github.com/devsecopslonghn) | [Email](mailto:longhn0710@gmail.com)
 
-## About
+## Engineering Profile
 
-DevOps Engineer based in Ho Chi Minh City, Vietnam, with 3+ years of experience in regulated financial environments.
+- **4 years** across DevOps / DevSecOps roles
+- Supporting an enterprise **CI/CD estate of ~400 source repositories**
+- Direct contributor to **Sacombank's Temenos T24 R25 production upgrade**, the first successful T24 R25 core banking upgrade in Vietnam
+- **Maintainer of the Jenkins Ansible Tower Plugin** under the Jenkins project
+- Hands-on with both **container platforms** and **traditional enterprise middleware**
 
-My work is centered around secure and auditable delivery:
+## What I Engineer
 
-- CI/CD pipeline engineering for multi-environment deployments
-- OpenShift and Kubernetes deployment automation
-- Reusable GitHub Actions, GitLab CI, and release governance
-- Helm-based application delivery for modular upgrades
-- Database CI/CD with versioned migrations and rollback planning
-- Security scanning integration with SonarQube, Aqua Scanner, Coverity, and BlackDuck
-- Monitoring and incident visibility using Grafana, Prometheus, Datadog, Zabbix, and Kibana
+### CI/CD Platform Engineering
+Reusable Jenkins/Groovy shared pipelines, GitLab CI, GitHub Actions, release governance, artifact promotion, multi-environment delivery, and developer enablement.
 
-## Current Focus
+### Secure Software Delivery
+SAST, SCA, container scanning, DAST, automated testing, approval gates, auditability, and security controls integrated directly into the release path.
 
-- Managing CI/CD patterns across large banking application portfolios
-- Automating deployment workflows for Core Banking, Open Banking, and Payment systems
-- Improving release safety through approval gates, audit logs, and rollback strategies
-- Building platform workflows that connect Git, Ansible, ITSM, and Microsoft Teams
+### Release & Availability Engineering
+Rolling, canary, and blue-green deployment patterns for container workloads, plus controlled node-by-node rollout strategies for clustered WebSphere and JBoss systems.
 
-## Impact Highlights
+### Platform & Infrastructure
+Kubernetes, OpenShift, Helm, Argo CD, Ansible, Terraform, AWS, artifact repositories, observability, and enterprise application platforms.
 
-- Contributed to Temenos T24 R25 go-live delivery in Vietnam through pipeline automation and deployment standardization
-- Helped reduce a major banking upgrade window from weeks to days through repeatable CI/CD and Helm-based delivery
-- Redesigned JBoss deployment topology for an AML platform to remove avoidable deployment downtime
-- Built and maintained automation patterns for WebSphere, JBoss, OpenShift, WSO2 API Manager, and database deployments
-- Supported production-grade reliability practices with monitoring, alerting, cleanup automation, and incident response
+## Selected Engineering Work
 
-## Tech Stack
+### Temenos T24 R25 Platform Delivery
+
+Contributed to Sacombank's successful Temenos T24 R25 production upgrade through CI/CD automation, OpenShift, Helm packaging, release standardization, and production go-live support.
+
+My platform work includes:
+
+- T24 R25 Transact umbrella Helm architecture
+- reusable templates and **18 component/workload charts**
+- delivery across **Develop, SIT, UAT, Staging, DR, and Production**
+- image and artifact promotion
+- environment-specific configuration and resource controls
+- CI/CD integration for packaging and rollout
+
+Official Sacombank announcement:
+https://www.sacombank.com.vn/trang-chu/tin-tuc/tin-sacombank/2026/sacombank-nang-cap-thanh-cong-core-banking-t24-r25-moi-nhat-toan-cau.html
+
+### Enterprise CI/CD Platform
+
+One of a 4-person team supporting CI/CD for approximately **400 source repositories** across OpenShift microservices, WebSphere, JBoss, and other enterprise application platforms.
+
+The delivery platform covers multiple languages, build systems, security controls, artifact formats, and environment promotion paths.
+
+### Jenkins Ansible Tower Plugin
+
+Maintainer of [jenkinsci/ansible-tower-plugin](https://github.com/jenkinsci/ansible-tower-plugin), the Jenkins integration for Ansible Tower, AWX, and Ansible Automation Platform.
+
+Recent engineering work includes:
+
+- resilient AAP/AWX workflow polling and transient-failure handling
+- improved build diagnostics and secret-safe logging
+- Job DSL compatibility fixes
+- Jenkins/JDK baseline modernization and plugin compatibility testing
+- UTF-8 request-body correctness
+- Jenkins security scan integration
+- expanded automated regression coverage
+
+## Experience
+
+**Sacombank — DevOps Engineer**  
+Nov 2024 — Present  
+Core Banking · Open Banking · Payment Systems
+
+**Accenture — Monitoring DevOps Engineer**  
+Jul 2024 — Oct 2024  
+LVMH Louis Vuitton · OVH Cloud
+
+**DXC Technology Vietnam — DevOps Engineer**  
+Sep 2022 — Jul 2024  
+AWS · Terraform · CI/CD · Financial Services
+
+## Technical Stack
 
 | Area | Tools |
 | --- | --- |
-| CI/CD | GitLab CI, GitHub Actions, and reusable workflow automation |
-| Containers | Docker, Kubernetes, OpenShift OCP, Helm |
-| Automation | Ansible, Terraform, Bash, Python |
-| Database Delivery | Flyway, SQL versioning, migration and rollback scripts |
-| Monitoring | Grafana, Prometheus, Datadog, Zabbix, Kibana |
-| Security | SonarQube, Aqua Scanner, Coverity, BlackDuck |
-| Artifact Management | Nexus, JFrog Artifactory |
-| Cloud | AWS EC2, S3, RDS, ECS, Auto Scaling, Spot Instances |
+| CI/CD & SCM | Jenkins, Groovy Shared Pipeline/Stage, GitLab CI, GitHub Actions, Git, MR governance, GitOps |
+| Containers & Platform | Kubernetes, OpenShift OCP, Docker, Helm, Argo CD |
+| Security | Coverity, SonarQube, Black Duck, Aqua, OWASP ZAP, Zimperium |
+| Automation & IaC | Ansible, Terraform, Bash, Python, PowerShell, Groovy |
+| Artifact Management | Nexus, JFrog Artifactory, Maven/NuGet/raw repositories, Docker registry, Helm |
+| Cloud | AWS EC2, S3, RDS, ECS, IAM, API Gateway, Auto Scaling, Spot |
+| Observability | Prometheus, Grafana, Datadog, Zabbix, Kibana |
+| Enterprise Platforms | Temenos T24 R25, WebSphere, JBoss, WebLogic, IIS, WSO2 |
 
-## Pinned Work
+## Compliance & Governance
 
-### [drgdevlab_mainpage](https://github.com/devsecopslonghn/drgdevlab_mainpage)
-
-Personal DevOps portfolio built with Astro and Tailwind CSS. It presents my experience, CV, production delivery background, and DevOps project notes.
-
-### [vpnclient](https://github.com/devsecopslonghn/vpnclient)
-
-Personal automation client for VPN connection workflows.
-
-### [exam-database](https://github.com/devsecopslonghn/exam-database)
-
-Simple database design exercise for categories, questions, answer choices, users, and scoring.
-
-### Banking CI/CD Case Studies
-
-Public-safe summaries of real delivery patterns I work with: branch-based release strategy, approval gates, OpenShift rollout design, database migration governance, and monitoring-driven operations.
+Participated in the **2026 ISO 27001:2022 internal audit** for the DevOps/CI-CD scope, supporting reviews of pipeline controls, release governance, security processes, and audit evidence.
 
 ## Resume
 
-- [View portfolio](https://drgdevlab.com)
-- [Download resume](https://drgdevlab.com/resume/Long_Ho_DevOps_Resume.pdf)
+- [Professional portfolio](https://drgdevlab.com)
+- [Web CV](https://drgdevlab.com/cv/root)
 
 ## Contact
 
-For DevOps, CI/CD, platform automation, or banking delivery discussions:
+For DevSecOps, CI/CD platform engineering, release engineering, Kubernetes/OpenShift, or banking platform discussions:
 
 - Email: [longhn0710@gmail.com](mailto:longhn0710@gmail.com)
 - LinkedIn: [linkedin.com/in/longhn0710](https://www.linkedin.com/in/longhn0710)
